@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.cli.MavenCli;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
@@ -36,29 +37,53 @@ public class Runner {
 	private static final int BUFFER_SIZE = 1024;
 
 	public static void main(String[] args) {
+
+		//		InvocationRequest request = new DefaultInvocationRequest();
+		//		request.setPomFile( new File( "pom.xml" ) );
+		//		request.setGoals( Arrays.asList("clean","install"," antrun:run@hbm2java -X" ) );
+		//		Invoker invoker = new DefaultInvoker();
+		//		invoker.setMavenExecutable(new File("mvn.cmd"));
+		//		invoker.setMavenHome(new File("maven"));
+		//		try {
+		//			InvocationResult result = invoker.execute( request );
+		//		} catch (MavenInvocationException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
+
+
 		// Clean previously created database
 		InvocationRequest request = new DefaultInvocationRequest();
 		request.setPomFile( new File( "pom.xml" ) );
-		request.setGoals( Arrays.asList("clean, install"));
+		request.setGoals( Arrays.asList("clean install"));
 		Invoker invoker = new DefaultInvoker();
 		invoker.setMavenExecutable(new File("mvn.cmd"));
 		invoker.setMavenHome(new File("maven"));
+		InvocationResult result;
 		try {
-			InvocationResult result = invoker.execute( request );
+			result = invoker.execute( request );
+		} catch (MavenInvocationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
 			// Create SQLIte Database to store User preferences.
 			String databaseUrl = "jdbc:sqlite:src/main/resources/sample.db";
 			// create a connection source to our database
 			ConnectionSource connectionSource;
-
 			connectionSource = new JdbcConnectionSource(databaseUrl);
+			Dao<ApiConf, String> apiConfDao = DaoManager.createDao(connectionSource, ApiConf.class);
 			TableUtils.createTable(connectionSource, ApiBean.class);
 			TableUtils.createTable(connectionSource, ApiConf.class);
+
 			TableUtils.createTable(connectionSource, ApiGroup.class);
 			TableUtils.createTable(connectionSource, ApiGroupPerm.class);
 			TableUtils.createTable(connectionSource, ApiUser.class);
 			TableUtils.createTable(connectionSource, ApiUserPerm.class);
-
-		} catch (MavenInvocationException | SQLException e) {
+			for (String query : FileUtils.readLines(new File("api_conf.sql"),"UTF-8")) {
+				apiConfDao.executeRawNoArgs(query);
+			}
+		} catch (SQLException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -67,7 +92,7 @@ public class Runner {
 		// Invoque Retro-engineering / configuration / generation process.
 		try {
 			request.setGoals( Arrays.asList("antrun:run@hbm2java -X" ) );
-			InvocationResult result = invoker.execute( request );
+			result = invoker.execute( request );
 		} catch (MavenInvocationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
