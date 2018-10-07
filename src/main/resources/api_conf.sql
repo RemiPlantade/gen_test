@@ -39,4 +39,12 @@ INSERT INTO `api_conf` (id,param_name,param_value,param_type,param_key,modifiabl
 INSERT INTO `api_conf` (id,param_name,param_value,param_type,param_key,modifiable,param_category,added,description) VALUES (46,'Previous Server Port',8080,'number','previous.api.port',0,'web_server',1,NULL);
 INSERT INTO `api_conf` (id,param_name,param_value,param_type,param_key,modifiable,param_category,added,description) VALUES (47,'Max Thread',0,'number','server.tomcat.max-threads',1,'web_server',1,'Maximum number of worker threads');
 INSERT INTO `api_conf` (id,param_name,param_value,param_type,param_key,modifiable,param_category,added,description) VALUES (48,'URI Encoding','UTF-8','text','server.tomcat.uri-encoding',1,'web_server',1,'Character encoding to use to decode the URI.');
-INSERT INTO `api_conf` (id,param_name,param_value,param_type,param_key,modifiable,param_category,added,description) VALUES (49,'Api Base URL','','text','api.base.url','1','general',1,'Base API URL for all request');
+INSERT INTO `api_conf` (id,param_name,param_value,param_type,param_key,modifiable,param_category,added,description) VALUES (49,'Api Base URL','','text','api.base.url',1,'general',1,NULL);
+INSERT INTO `api_conf` (id,param_name,param_value,param_type,param_key,modifiable,param_category,added,description) VALUES (50,'Database name','','text','spring.datasource.base.name',0,'general',1,'Name of the database');
+INSERT INTO `api_conf` (id,param_name,param_value,param_type,param_key,modifiable,param_category,added,description) VALUES (51,'Hibernate connection username','','text','hibernate.connection.username',0,'general',1,'');
+INSERT INTO `api_conf` (id,param_name,param_value,param_type,param_key,modifiable,param_category,added,description) VALUES (52,'Hibernate connection password','','text','hibernate.connection.password',0,'general',1,'');
+INSERT INTO `api_conf` (id,param_name,param_value,param_type,param_key,modifiable,param_category,added,description) VALUES (53,'Hibernate default catalogue name','','text','hibernate.default_catalog',0,'general',1,'');
+INSERT INTO `api_conf` (id,param_name,param_value,param_type,param_key,modifiable,param_category,added,description) VALUES (54,'Hibernate dialect','','text','hibernate.dialect',0,'general',1,'');
+INSERT INTO `api_conf` (id,param_name,param_value,param_type,param_key,modifiable,param_category,added,description) VALUES (55,'Hibernate database connection URL','','text','hibernate.connection.url',0,'general',1,'');
+INSERT INTO `api_conf` (id,param_name,param_value,param_type,param_key,modifiable,param_category,added,description) VALUES (56,'Hibernate Driver class','','text','hibernate.connection.driver_class',0,'general',1,'');
+END TRANSACTION;

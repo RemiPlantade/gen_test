@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.concurrent.Callable;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -21,6 +22,7 @@ import org.apache.maven.shared.invoker.MavenInvocationException;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
@@ -72,17 +74,22 @@ public class Runner {
 			// create a connection source to our database
 			ConnectionSource connectionSource;
 			connectionSource = new JdbcConnectionSource(databaseUrl);
-			Dao<ApiConf, String> apiConfDao = DaoManager.createDao(connectionSource, ApiConf.class);
+			try {
 			TableUtils.createTable(connectionSource, ApiBean.class);
 			TableUtils.createTable(connectionSource, ApiConf.class);
-
 			TableUtils.createTable(connectionSource, ApiGroup.class);
 			TableUtils.createTable(connectionSource, ApiGroupPerm.class);
 			TableUtils.createTable(connectionSource, ApiUser.class);
 			TableUtils.createTable(connectionSource, ApiUserPerm.class);
-			for (String query : FileUtils.readLines(new File("api_conf.sql"),"UTF-8")) {
+			}catch(Exception e) {
+				System.out.println("Unable to create table");
+			}
+			Dao<ApiConf, String> apiConfDao = DaoManager.createDao(connectionSource, ApiConf.class);
+			for (String query : FileUtils.readLines(new File("src/main/resources/api_conf.sql"),"UTF-8")) {
 				apiConfDao.executeRawNoArgs(query);
 			}
+			connectionSource.close();
+
 		} catch (SQLException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
